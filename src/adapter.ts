@@ -1,3 +1,4 @@
+import { useSWRConfig } from "swr";
 import useSWRInfinite from "swr/infinite";
 
 interface PaginationParams {
@@ -28,6 +29,7 @@ export function useSWRPaginated<T>(
   };
 
   const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
+
   const data = swr.data;
   const isEmpty = data?.[0]?.results?.length === 0;
   const isReachingEnd = isEmpty
@@ -39,6 +41,6 @@ export function useSWRPaginated<T>(
     ...swr,
     isReachingEnd: data ? isReachingEnd : true,
     isEmpty,
-    data: data && data.map((p) => p.results).flat(),
+    data: data && data.map((p) => p?.results).flat(),
   };
 }
