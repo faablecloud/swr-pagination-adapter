@@ -29,7 +29,7 @@ export function useSWRPaginated<T>(
 
   const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
   const data = swr.data;
-  const isEmpty = data?.[0]?.results.length === 0;
+  const isEmpty = data?.[0]?.results?.length === 0;
   const isReachingEnd = isEmpty
     ? true
     : data
