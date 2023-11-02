@@ -30,5 +30,19 @@
     "swr": "^2.2.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
+  },
+  "release": {
+    "branches": "main",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true
+        }
+      ],
+      "@semantic-release/github"
+    ]
   }
 }
