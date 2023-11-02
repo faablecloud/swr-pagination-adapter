@@ -33,12 +33,12 @@ export function useSWRPaginated<T>(
   const isReachingEnd = isEmpty
     ? true
     : data
-    ? data[(data?.length || 1) - 1]?.next == null
+    ? data[data?.length - 1]?.next == null
     : false;
   return {
     ...swr,
     isReachingEnd: data ? isReachingEnd : true,
     isEmpty,
-    data: swr.data && swr.data.map((p) => p.results).flat(),
+    data: data && data.map((p) => p.results).flat(),
   };
 }
