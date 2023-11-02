@@ -1,0 +1,33 @@
+{
+  "name": "@faablecloud/swr-pagination-adapter",
+  "description": "A SWR adapter for Faable pagination APIs",
+  "version": "0.0.0-dev",
+  "repository": {
+    "url": "https://github.com/faablecloud/swr-pagination-adapter"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b",
+    "prepack": "yarn run build",
+    "release": "semantic-release"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "swr": "^2.2.4"
+  },
+  "devDependencies": {
+    "ava": "^5.3.1",
+    "nodemon": "^3.0.1",
+    "react": "^18.2.0",
+    "swr": "^2.2.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
