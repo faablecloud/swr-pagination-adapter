@@ -1,31 +1,37 @@
 import { useSWRConfig } from "swr";
 import useSWRInfinite from "swr/infinite";
+import { useState, useMemo } from "react";
 
 interface PaginationParams {
-  pageSize: number;
+  pageSize?: number;
 }
 
 export function useSWRPaginated<T>(
   base: string,
-  options: PaginationParams = { pageSize: 40 }
+  options: PaginationParams = {}
 ) {
-  const getKey = (pageIndex, previousPageData) => {
-    // reached the end
-    // console.log(previousPageData);
-    if (previousPageData && !previousPageData.next) return null;
+  const [pageSize, setPageSize] = useState(options?.pageSize || 40);
 
-    const url = new URL(base, "https://dummy.com");
+  const getKey = useMemo(
+    () => (pageIndex, previousPageData) => {
+      // reached the end
+      // console.log(previousPageData);
+      if (previousPageData && !previousPageData.next) return null;
 
-    // page size
-    url.searchParams.set("pageSize", options.pageSize.toString());
+      const url = new URL(base, "https://dummy.com");
 
-    // first page, we don't have `previousPageData`
-    if (pageIndex != 0) {
-      // add the cursor to the API endpoint
-      url.searchParams.set("cursor", previousPageData.next);
-    }
-    return base + "?" + url.searchParams.toString();
-  };
+      // page size
+      url.searchParams.set("pageSize", pageSize.toString());
+
+      // first page, we don't have `previousPageData`
+      if (pageIndex != 0) {
+        // add the cursor to the API endpoint
+        url.searchParams.set("cursor", previousPageData.next);
+      }
+      return base + "?" + url.searchParams.toString();
+    },
+    [pageSize]
+  );
 
   const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
 
@@ -48,5 +54,6 @@ export function useSWRPaginated<T>(
     isEmpty,
     data,
     pages,
+    setPageSize,
   };
 }
