@@ -1,6 +1,6 @@
 import { useSWRConfig } from "swr";
 import useSWRInfinite from "swr/infinite";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 interface PaginationParams {
   pageSize?: number;
@@ -34,6 +34,10 @@ export function useSWRPaginated<T>(
   );
 
   const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
+
+  useEffect(() => {
+    swr.mutate();
+  }, [pageSize]);
 
   const isEmpty = swr.data?.[0]?.results?.length === 0;
   const isReachingEnd = isEmpty
