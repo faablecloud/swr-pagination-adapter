@@ -55,5 +55,6 @@ export function useSWRPaginated<T>(
     data,
     pages,
     setPageSize,
+    pageSize,
   };
 }
