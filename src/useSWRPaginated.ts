@@ -7,7 +7,6 @@ interface PaginationParams {
 
 export function useSWRPaginated<T>(
   base: string,
-  _params: {} = {},
   options: PaginationParams = { pageSize: 40 }
 ) {
   const getKey = (pageIndex, previousPageData) => {
@@ -15,32 +14,39 @@ export function useSWRPaginated<T>(
     // console.log(previousPageData);
     if (previousPageData && !previousPageData.next) return null;
 
-    let params = new URLSearchParams(_params);
+    const url = new URL(base, "https://dummy.com");
 
     // page size
-    params.set("pageSize", options.pageSize.toString());
+    url.searchParams.set("pageSize", options.pageSize.toString());
 
     // first page, we don't have `previousPageData`
-    if (pageIndex === 0) return base + "?" + params.toString();
-
-    // add the cursor to the API endpoint
-    params.set("cursor", previousPageData.next);
-    return base + "?" + params.toString();
+    if (pageIndex != 0) {
+      // add the cursor to the API endpoint
+      url.searchParams.set("cursor", previousPageData.next);
+    }
+    return base + "?" + url.searchParams.toString();
   };
 
   const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
 
-  const data = swr.data;
-  const isEmpty = data?.[0]?.results?.length === 0;
+  const isEmpty = swr.data?.[0]?.results?.length === 0;
   const isReachingEnd = isEmpty
     ? true
-    : data
-    ? data[data?.length - 1]?.next == null
+    : swr.data
+    ? swr.data[swr.data?.length - 1]?.next == null
     : false;
+
+  // Array of pages
+  const pages = swr.data;
+
+  // All pages flattened
+  const data = swr.data && swr.data.map((p) => p?.results).flat();
+
   return {
     ...swr,
     isReachingEnd: data ? isReachingEnd : true,
     isEmpty,
-    data: data && data.map((p) => p?.results).flat(),
+    data,
+    pages,
   };
 }
