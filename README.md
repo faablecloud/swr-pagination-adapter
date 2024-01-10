@@ -31,8 +31,38 @@ interface DataType {
 
 const ListComponent = () => {
   const { data, isReachingEnd, setSize } = useSWRPaginated<DataType>(
-    `/database`,
-    {},
+    `/recipes?query=label:babies`,
+    { pageSize: 5 }
+  );
+
+  return (
+    <>
+      {!data && <p>No Data</p>}
+      {data.map((obj) => (
+        <Item {...obj} />
+      ))}
+      {!isReachingEnd && (
+        <button onClick={() => setSize(size + 1)}>Load more</button>
+      )}
+    </>
+  );
+};
+```
+
+Another example:
+```
+const ListComponent = () => {
+  const params = new URLSearchParams({query:"label:babies"});
+
+  /*
+  const params2 = new URLSearchParams({
+    query:["label:babies","label:freeze"].join(" "),
+    category:"tag_XXXX"
+  });
+  */
+
+  const { data, isReachingEnd, setSize } = useSWRPaginated<DataType>(
+    `/recipes?${params}`,
     { pageSize: 5 }
   );
 
