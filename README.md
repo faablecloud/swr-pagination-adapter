@@ -50,7 +50,8 @@ const ListComponent = () => {
 ```
 
 Another example:
-```
+
+```tsx
 const ListComponent = () => {
   const params = new URLSearchParams({query:"label:babies"});
 
