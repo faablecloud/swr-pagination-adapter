@@ -28,7 +28,7 @@ export function useSWRPaginated<T>(
         // add the cursor to the API endpoint
         url.searchParams.set("cursor", previousPageData.next);
       }
-      return base + "?" + url.searchParams.toString();
+      return url.pathname + "?" + url.searchParams.toString();
     },
     [pageSize]
   );
