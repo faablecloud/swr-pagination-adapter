@@ -13,6 +13,12 @@
 
 ## Install
 
+With Yarn:
+
+```bash
+ yarn add @faablecloud/swr-pagination-adapter
+```
+
 With NPM:
 
 ```bash
