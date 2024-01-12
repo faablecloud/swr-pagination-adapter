@@ -20,7 +20,6 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
       if (base == null) return null;
 
       // reached the end
-      // console.log(previousPageData);
       if (previousPageData && !previousPageData.next) return null;
 
       const url = new URL(base, "https://dummy.com");

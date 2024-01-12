@@ -53,7 +53,7 @@ Another example:
 
 ```tsx
 const ListComponent = () => {
-  const params = new URLSearchParams({query:"label:babies"});
+  const params = new URLSearchParams({ query: "label:babies" });
 
   /*
   const params2 = new URLSearchParams({
@@ -80,6 +80,19 @@ const ListComponent = () => {
   );
 };
 ```
+
+## React Native and Expo
+
+> [!IMPORTANT]
+> You have to polyfill `URL()` module from `node:url` to use this package in react native.
+
+Locate your JavaScript entry-point file, commonly called index.js at the root of your React Native project.
+
+```js
+import "react-native-url-polyfill/auto";
+```
+
+- https://www.npmjs.com/package/react-native-url-polyfill
 
 ## Links
 
