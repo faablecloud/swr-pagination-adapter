@@ -1,16 +1,20 @@
-import { useSWRConfig } from "swr";
-import useSWRInfinite from "swr/infinite";
+import { useSWRConfig, BareFetcher } from "swr";
+import useSWRInfinite, { SWRInfiniteConfiguration } from "swr/infinite";
 import { useState, useMemo, useEffect } from "react";
 
 interface PaginationParams {
   pageSize?: number;
 }
 
-export function useSWRPaginated<T>(
+export function useSWRPaginated<
+  T,
+  Page extends { next: string | null; results: T[] }
+>(
   base: string | null,
-  options: PaginationParams = {}
+  config?: PaginationParams &
+    SWRInfiniteConfiguration<Page, Error, BareFetcher<Page>>
 ) {
-  const [pageSize, setPageSize] = useState(options?.pageSize || 40);
+  const [pageSize, setPageSize] = useState(config?.pageSize || 40);
 
   const getKey = useMemo(
     () => (pageIndex, previousPageData) => {
@@ -36,7 +40,7 @@ export function useSWRPaginated<T>(
     [pageSize, base]
   );
 
-  const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
+  const swr = useSWRInfinite<Page>(getKey, config);
 
   useEffect(() => {
     swr.mutate();

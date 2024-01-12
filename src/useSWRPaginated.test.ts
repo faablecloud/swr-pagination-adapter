@@ -21,3 +21,18 @@ test("should use counter", () => {
 
   expect(typeof result.current.setSize).toBe("function");
 });
+
+test("should use counter", () => {
+  let a = "hola";
+  const { result } = renderHook(() =>
+    useSWRPaginated(a ? "/demo?q=124" : null, {
+      pageSize: 20,
+      refreshInterval: 3000,
+    })
+  );
+
+  expect(result.current.data).toBe(undefined);
+  expect(result.current.pages).toBe([]);
+
+  expect(typeof result.current.setSize).toBe("function");
+});
