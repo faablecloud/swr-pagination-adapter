@@ -6,13 +6,11 @@ interface PaginationParams {
   pageSize?: number;
 }
 
-export function useSWRPaginated<
-  T,
-  Page extends { next: string | null; results: T[] }
->(
+type Page<T> = { next: string | null; results: T[] };
+
+export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   base: string | null,
-  config?: PaginationParams &
-    SWRInfiniteConfiguration<Page, Error, BareFetcher<Page>>
+  config?: PaginationParams & SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ) {
   const [pageSize, setPageSize] = useState(config?.pageSize || 40);
 
@@ -40,7 +38,7 @@ export function useSWRPaginated<
     [pageSize, base]
   );
 
-  const swr = useSWRInfinite<Page>(getKey, config);
+  const swr = useSWRInfinite<P>(getKey, config);
 
   useEffect(() => {
     swr.mutate();
