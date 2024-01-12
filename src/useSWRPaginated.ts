@@ -7,13 +7,16 @@ interface PaginationParams {
 }
 
 export function useSWRPaginated<T>(
-  base: string,
+  base: string | null,
   options: PaginationParams = {}
 ) {
   const [pageSize, setPageSize] = useState(options?.pageSize || 40);
 
   const getKey = useMemo(
     () => (pageIndex, previousPageData) => {
+      // Null key if base is null to use SWR conditinal fetching
+      if (base == null) return null;
+
       // reached the end
       // console.log(previousPageData);
       if (previousPageData && !previousPageData.next) return null;
@@ -30,7 +33,7 @@ export function useSWRPaginated<T>(
       }
       return url.pathname + "?" + url.searchParams.toString();
     },
-    [pageSize]
+    [pageSize, base]
   );
 
   const swr = useSWRInfinite<{ next: string | null; results: T[] }>(getKey);
