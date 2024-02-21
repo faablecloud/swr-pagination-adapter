@@ -43,25 +43,36 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
     swr.mutate();
   }, [pageSize]);
 
-  const isEmpty = swr.data?.[0]?.results?.length === 0;
-  const isReachingEnd = isEmpty
-    ? true
-    : swr.data
-    ? swr.data[swr.data?.length - 1]?.next == null
-    : false;
+  const isEmpty = useMemo(
+    () => swr.data?.[0]?.results?.length === 0,
+    [swr.data]
+  );
 
-  // Array of pages
-  const pages = swr.data;
+  const isReachingEnd = useMemo(
+    () =>
+      isEmpty
+        ? true
+        : swr.data
+        ? swr.data[swr.data?.length - 1]?.next == null
+        : false,
+    [swr.data, isEmpty]
+  );
 
-  // All pages flattened
-  const data = swr.data && swr.data.map((p) => p?.results).flat();
+  // All pages flattened on each data change
+  const data = useMemo(() => {
+    if (swr.data) {
+      return swr.data.map((p) => p?.results).flat();
+    }
+    return;
+  }, [swr.data]);
 
   return {
     ...swr,
-    isReachingEnd: data ? isReachingEnd : true,
+    //isReachingEnd: data ? isReachingEnd : true,
+    isReachingEnd,
     isEmpty,
     data,
-    pages,
+    pages: swr.data, // Raw array of pages
     setPageSize,
     pageSize,
   };
