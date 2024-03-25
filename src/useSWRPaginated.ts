@@ -12,7 +12,7 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   base: string | null,
   config?: PaginationParams & SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ) {
-  const [pageSize, setPageSize] = useState(config?.pageSize || 40);
+  const pageSize = useMemo(() => config.pageSize || 40, [config.pageSize]);
 
   const getKey = useMemo(
     () => (pageIndex, previousPageData) => {
@@ -34,7 +34,7 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
       }
       return url.pathname + "?" + url.searchParams.toString();
     },
-    [pageSize, base]
+    [pageSize, base, config]
   );
 
   const swr = useSWRInfinite<P>(getKey, config);
@@ -65,7 +65,6 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
     }
     return;
   }, [swr.data]);
-
   return {
     ...swr,
     //isReachingEnd: data ? isReachingEnd : true,
@@ -73,7 +72,6 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
     isEmpty,
     data,
     pages: swr.data, // Raw array of pages
-    setPageSize,
     pageSize,
   };
 }
