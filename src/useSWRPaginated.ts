@@ -12,7 +12,7 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   base: string | null,
   config?: PaginationParams & SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ) {
-  const pageSize = useMemo(() => config.pageSize || 40, [config.pageSize]);
+  const pageSize = useMemo(() => config?.pageSize || 40, [config?.pageSize]);
 
   const getKey = useMemo(
     () => (pageIndex, previousPageData) => {
