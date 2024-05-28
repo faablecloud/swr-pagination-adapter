@@ -1,1 +1,6 @@
 src
+.github
+babel.config.js
+tsconfig.json
+tsconfig.tsbuildinfo
+yarn.lock
