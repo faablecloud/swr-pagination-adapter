@@ -13,22 +13,14 @@
 
 ## Install
 
-With Yarn:
-
 ```bash
- yarn add @faablecloud/swr-pagination-adapter
-```
-
-With NPM:
-
-```bash
- npm install @faablecloud/swr-pagination-adapter
+ npm install @faable/swr-pagination-adapter
 ```
 
 ## Usage:
 
 ```tsx
-import { useSWRPaginated } from "@faablecloud/swr-pagination-adapter";
+import { useSWRPaginated } from "@faable/swr-pagination-adapter";
 
 interface DataType {
   name: string;
