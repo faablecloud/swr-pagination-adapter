@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a aria-label="NPM version" href="https://www.npmjs.com/package/@faable/faableql">
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/@faable/swr-pagination-adapter">
     <img alt="" src="https://img.shields.io/npm/v/@faable/swr-pagination-adapter.svg?style=for-the-badge&labelColor=000000">
   </a>
 </p>
