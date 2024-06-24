@@ -9,7 +9,7 @@ interface PaginationParams {
 type Page<T> = { next: string | null; results: T[] };
 
 export const generateGetKey = (base: string, config: PaginationParams = {}) => {
-  const { pageSize = 40 } = config;
+  const { pageSize } = config;
   return (pageIndex, previousPageData) => {
     // Null key if base is null to use SWR conditinal fetching
     if (base == null) return null;
@@ -20,7 +20,9 @@ export const generateGetKey = (base: string, config: PaginationParams = {}) => {
     const url = new URL(base, "https://dummy.com");
 
     // page size
-    url.searchParams.set("pageSize", pageSize.toString());
+    if (pageSize) {
+      url.searchParams.set("pageSize", pageSize.toString());
+    }
 
     // first page, we don't have `previousPageData`
     if (pageIndex != 0) {
@@ -33,7 +35,7 @@ export const generateGetKey = (base: string, config: PaginationParams = {}) => {
 
 export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   getKey: Parameters<typeof useSWRInfinite>[0],
-  config?: PaginationParams & SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
+  config?: SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ) {
   const swr = useSWRInfinite<P>(getKey, config);
 

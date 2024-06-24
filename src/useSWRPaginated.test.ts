@@ -28,7 +28,6 @@ test("should use counter", () => {
   let a = "hola";
   const { result } = renderHook(() =>
     useSWRPaginated(a ? generateGetKey("/demo?q=124") : null, {
-      pageSize: 20,
       refreshInterval: 3000,
     })
   );
