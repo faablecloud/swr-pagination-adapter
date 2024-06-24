@@ -68,7 +68,10 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
     return;
   }, [swr.data]);
 
-  return Object.assign(swr, {
+  return Object.assign<
+    ReturnType<typeof useSWRInfinite<P>>,
+    { items: T[]; isReachingEnd: boolean; isEmpty: boolean }
+  >(swr, {
     isReachingEnd,
     isEmpty,
     items,

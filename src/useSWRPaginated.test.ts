@@ -27,9 +27,12 @@ test("should use counter", () => {
 test("should use counter", () => {
   let a = "hola";
   const { result } = renderHook(() =>
-    useSWRPaginated(a ? generateGetKey("/demo?q=124") : null, {
-      refreshInterval: 3000,
-    })
+    useSWRPaginated<{ name: string }>(
+      a ? generateGetKey("/demo?q=124") : null,
+      {
+        refreshInterval: 3000,
+      }
+    )
   );
 
   expect(result.current.data).toBe(undefined);
