@@ -8,6 +8,28 @@ interface PaginationParams {
 
 type Page<T> = { next: string | null; results: T[] };
 
+export const generateGetKey =
+  (config: { base: string } & PaginationParams) =>
+  (pageIndex, previousPageData) => {
+    // Null key if base is null to use SWR conditinal fetching
+    if (config.base == null) return null;
+
+    // reached the end
+    if (previousPageData && !previousPageData.next) return null;
+
+    const url = new URL(config.base, "https://dummy.com");
+
+    // page size
+    url.searchParams.set("pageSize", config.pageSize.toString());
+
+    // first page, we don't have `previousPageData`
+    if (pageIndex != 0) {
+      // add the cursor to the API endpoint
+      url.searchParams.set("cursor", previousPageData.next);
+    }
+    return url.pathname + "?" + url.searchParams.toString();
+  };
+
 export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   base: string | null,
   config?: PaginationParams & SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
@@ -15,25 +37,7 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   const pageSize = useMemo(() => config?.pageSize || 40, [config?.pageSize]);
 
   const getKey = useMemo(
-    () => (pageIndex, previousPageData) => {
-      // Null key if base is null to use SWR conditinal fetching
-      if (base == null) return null;
-
-      // reached the end
-      if (previousPageData && !previousPageData.next) return null;
-
-      const url = new URL(base, "https://dummy.com");
-
-      // page size
-      url.searchParams.set("pageSize", pageSize.toString());
-
-      // first page, we don't have `previousPageData`
-      if (pageIndex != 0) {
-        // add the cursor to the API endpoint
-        url.searchParams.set("cursor", previousPageData.next);
-      }
-      return url.pathname + "?" + url.searchParams.toString();
-    },
+    () => generateGetKey({ base, pageSize }),
     [pageSize, base, config]
   );
 
