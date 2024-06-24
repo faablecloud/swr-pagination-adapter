@@ -41,7 +41,10 @@
     "typescript": "^5.2.2"
   },
   "release": {
-    "branches": "main",
+    "branches": [
+      "main",
+      "next"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
