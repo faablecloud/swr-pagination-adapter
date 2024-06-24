@@ -8,8 +8,8 @@ interface PaginationParams {
 
 type Page<T> = { next: string | null; results: T[] };
 
-export const generateGetKey = (config: { base: string } & PaginationParams) => {
-  const { base, pageSize = 40 } = config;
+export const generateGetKey = (base: string, config: PaginationParams = {}) => {
+  const { pageSize = 40 } = config;
   return (pageIndex, previousPageData) => {
     // Null key if base is null to use SWR conditinal fetching
     if (base == null) return null;
@@ -32,21 +32,10 @@ export const generateGetKey = (config: { base: string } & PaginationParams) => {
 };
 
 export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
-  base: string | null,
+  getKey: Parameters<typeof useSWRInfinite>[0],
   config?: PaginationParams & SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ) {
-  const pageSize = useMemo(() => config?.pageSize || 40, [config?.pageSize]);
-
-  const getKey = useMemo(
-    () => generateGetKey({ base, pageSize }),
-    [pageSize, base, config]
-  );
-
   const swr = useSWRInfinite<P>(getKey, config);
-
-  useEffect(() => {
-    swr.mutate();
-  }, [pageSize]);
 
   const isEmpty = useMemo(
     () => swr.data?.[0]?.results?.length === 0,
@@ -77,6 +66,5 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
     isEmpty,
     data,
     pages: swr.data, // Raw array of pages
-    pageSize,
   };
 }
