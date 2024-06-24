@@ -7,7 +7,7 @@ test("should use counter", () => {
   );
   result.current.data;
   expect(result.current.data).toBe(undefined);
-  expect(result.current.pages).toBe([]);
+  expect(result.current.items).toBe([]);
 
   expect(typeof result.current.setSize).toBe("function");
 });
@@ -19,7 +19,7 @@ test("should use counter", () => {
   );
 
   expect(result.current.data).toBe(undefined);
-  expect(result.current.pages).toBe([]);
+  expect(result.current.items).toBe([]);
 
   expect(typeof result.current.setSize).toBe("function");
 });
@@ -33,7 +33,7 @@ test("should use counter", () => {
   );
 
   expect(result.current.data).toBe(undefined);
-  expect(result.current.pages).toBe([]);
+  expect(result.current.items).toBe([]);
 
   expect(typeof result.current.setSize).toBe("function");
 });

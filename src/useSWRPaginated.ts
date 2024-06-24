@@ -1,6 +1,9 @@
-import { useSWRConfig, BareFetcher } from "swr";
-import useSWRInfinite, { SWRInfiniteConfiguration } from "swr/infinite";
-import { useState, useMemo, useEffect } from "react";
+import { BareFetcher } from "swr";
+import useSWRInfinite, {
+  SWRInfiniteConfiguration,
+  SWRInfiniteKeyLoader,
+} from "swr/infinite";
+import { useMemo } from "react";
 
 interface PaginationParams {
   pageSize?: number;
@@ -8,7 +11,10 @@ interface PaginationParams {
 
 type Page<T> = { next: string | null; results: T[] };
 
-export const generateGetKey = (base: string, config: PaginationParams = {}) => {
+export const generateGetKey = <T>(
+  base: string,
+  config: PaginationParams = {}
+): SWRInfiniteKeyLoader<Page<T>> => {
   const { pageSize } = config;
   return (pageIndex, previousPageData) => {
     // Null key if base is null to use SWR conditinal fetching
@@ -34,7 +40,7 @@ export const generateGetKey = (base: string, config: PaginationParams = {}) => {
 };
 
 export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
-  getKey: Parameters<typeof useSWRInfinite>[0],
+  getKey: SWRInfiniteKeyLoader<P>,
   config?: SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ) {
   const swr = useSWRInfinite<P>(getKey, config);
@@ -55,18 +61,16 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   );
 
   // All pages flattened on each data change
-  const data = useMemo(() => {
+  const items = useMemo(() => {
     if (swr.data) {
       return swr.data.map((p) => p?.results).flat();
     }
     return;
   }, [swr.data]);
-  return {
-    ...swr,
-    //isReachingEnd: data ? isReachingEnd : true,
+
+  return Object.assign(swr, {
     isReachingEnd,
     isEmpty,
-    data,
-    pages: swr.data, // Raw array of pages
-  };
+    items,
+  });
 }
