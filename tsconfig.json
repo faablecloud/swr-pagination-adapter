@@ -7,7 +7,9 @@
     "module": "CommonJS",
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "declaration": true
+    "declaration": true,
+    "jsx": "react",
+    "lib": ["esnext", "dom"]
   },
   "include": ["src"]
 }

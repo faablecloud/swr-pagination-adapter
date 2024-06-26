@@ -4,3 +4,5 @@ babel.config.js
 tsconfig.json
 tsconfig.tsbuildinfo
 yarn.lock
+.test.js
+jest.config.js
