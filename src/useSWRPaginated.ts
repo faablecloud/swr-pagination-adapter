@@ -39,40 +39,33 @@ export const generateGetKey = <T>(
   };
 };
 
-type SWRPaginatedResponse<T> = SWRInfiniteResponse<T> & {
-  items: T[];
-  isEmpty: boolean;
-  isReachingEnd: boolean;
-};
-
 export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
   getKey: SWRInfiniteKeyLoader<P>,
   config?: SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
-): SWRPaginatedResponse<P> {
+) {
   const swr = useSWRInfinite<P>(getKey, config);
 
-  Object.defineProperty(swr, "items", {
-    get: function () {
-      return this.data?.map((p) => p?.results).flat();
+  return {
+    swr,
+    setSize: swr.setSize,
+    size: swr.size,
+    isValidating: swr.isValidating,
+    isLoading: swr.isLoading,
+    error: swr.error,
+    data: swr.data,
+    get items() {
+      return swr.data?.map((p) => p?.results).flat();
     },
-  });
-
-  Object.defineProperty(swr, "isEmpty", {
-    get: function () {
-      return this.data?.[0]?.results?.length === 0;
+    get isEmpty() {
+      return swr.data?.[0]?.results?.length === 0;
     },
-  });
-
-  Object.defineProperty(swr, "isReachingEnd", {
-    get: function () {
-      const empty = this.data?.[0]?.results?.length === 0;
+    get isReachingEnd() {
+      const empty = swr.data?.[0]?.results?.length === 0;
       return empty
         ? true
-        : this.data
-        ? this.data[this.data?.length - 1]?.next == null
+        : swr.data
+        ? swr.data[swr.data?.length - 1]?.next == null
         : false;
     },
-  });
-
-  return swr as any;
+  };
 }
