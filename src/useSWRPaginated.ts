@@ -3,6 +3,7 @@ import useSWRInfinite, {
   SWRInfiniteConfiguration,
   SWRInfiniteKeyLoader,
   SWRInfiniteResponse,
+  SWRInfiniteHook,
 } from "swr/infinite";
 
 interface PaginationParams {
@@ -25,7 +26,6 @@ export const generateGetKey = <T>(
 
     const url = new URL(base, "https://dummy.com");
 
-    console.log("STEP2", base);
     // page size
     if (pageSize) {
       url.searchParams.set("pageSize", pageSize.toString());
@@ -46,11 +46,12 @@ type SWRPaginatedResponse<T> = SWRInfiniteResponse & {
   isReachingEnd: boolean;
 };
 
-export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
-  getKey: SWRInfiniteKeyLoader<P>,
+export function useSWRPaginated<T = any, P extends Page<T> = Page<T>>(
+  getKey: SWRInfiniteKeyLoader,
   config?: SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ): SWRPaginatedResponse<T> {
-  const swr = useSWRInfinite<P>(getKey, config);
+  const params = [getKey, config].filter(Boolean);
+  const swr: SWRInfiniteResponse<P> = useSWRInfinite.call(this, params);
 
   Object.defineProperty(swr, "items", {
     get: function () {
