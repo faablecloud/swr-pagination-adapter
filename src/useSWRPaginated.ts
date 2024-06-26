@@ -1,15 +1,14 @@
-import { BareFetcher } from "swr";
+import { BareFetcher, Middleware, SWRHook } from "swr";
 import useSWRInfinite, {
   SWRInfiniteConfiguration,
   SWRInfiniteKeyLoader,
 } from "swr/infinite";
-import { useMemo } from "react";
 
 interface PaginationParams {
   pageSize?: number;
 }
 
-type Page<T> = { next: string | null; results: T[] };
+type Page<T = any> = { next: string | null; results: T[] };
 
 export const generateGetKey = <T>(
   base: string,
@@ -45,35 +44,20 @@ export function useSWRPaginated<T, P extends Page<T> = Page<T>>(
 ) {
   const swr = useSWRInfinite<P>(getKey, config);
 
-  const isEmpty = useMemo(
-    () => swr.data?.[0]?.results?.length === 0,
-    [swr.data]
-  );
-
-  const isReachingEnd = useMemo(
-    () =>
-      isEmpty
+  return Object.assign(swr, {
+    get isEmpty() {
+      return swr.data?.[0]?.results?.length === 0;
+    },
+    get isReachingEnd() {
+      const empty = swr.data?.[0]?.results?.length === 0;
+      return empty
         ? true
         : swr.data
         ? swr.data[swr.data?.length - 1]?.next == null
-        : false,
-    [swr.data, isEmpty]
-  );
-
-  // All pages flattened on each data change
-  const items = useMemo(() => {
-    if (swr.data) {
-      return swr.data.map((p) => p?.results).flat();
-    }
-    return;
-  }, [swr.data]);
-
-  return Object.assign<
-    ReturnType<typeof useSWRInfinite<P>>,
-    { items: T[]; isReachingEnd: boolean; isEmpty: boolean }
-  >(swr, {
-    isReachingEnd,
-    isEmpty,
-    items,
+        : false;
+    },
+    get items() {
+      return swr.data?.map((p) => p?.results).flat();
+    },
   });
 }
