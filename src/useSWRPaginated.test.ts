@@ -6,8 +6,8 @@ test("should use counter", () => {
     useSWRPaginated<{ id: string }>(generateGetKey("/demo?q=124"))
   );
   result.current.data;
-  expect(result.current.data).toBe(undefined);
-  expect(result.current.items).toBe([]);
+  expect(result.current.data).toStrictEqual([undefined]);
+  expect(result.current.items).toStrictEqual([]);
 
   expect(typeof result.current.setSize).toBe("function");
 });
@@ -18,8 +18,8 @@ test("should use counter", () => {
     useSWRPaginated(a ? generateGetKey("/demo?q=124") : null)
   );
 
-  expect(result.current.data).toBe(undefined);
-  expect(result.current.items).toBe([]);
+  expect(result.current.data).toStrictEqual([undefined]);
+  expect(result.current.items).toStrictEqual([]);
 
   expect(typeof result.current.setSize).toBe("function");
 });
@@ -35,8 +35,8 @@ test("should use counter", () => {
     )
   );
 
-  expect(result.current.data).toBe(undefined);
-  expect(result.current.items).toBe([]);
+  expect(result.current.data).toStrictEqual([undefined]);
+  expect(result.current.items).toStrictEqual([]);
 
   expect(typeof result.current.setSize).toBe("function");
 });
