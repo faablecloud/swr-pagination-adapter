@@ -50,8 +50,7 @@ export function useSWRPaginated<T = any, P extends Page<T> = Page<T>>(
   getKey: SWRInfiniteKeyLoader,
   config?: SWRInfiniteConfiguration<P, Error, BareFetcher<P>>
 ): SWRPaginatedResponse<T> {
-  const params = [getKey, config].filter(Boolean);
-  const swr: SWRInfiniteResponse<P> = useSWRInfinite.call(this, params);
+  const swr: SWRInfiniteResponse<P> = useSWRInfinite(getKey, config);
 
   Object.defineProperty(swr, "items", {
     get: function () {

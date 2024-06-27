@@ -7,7 +7,7 @@ import { generateGetKey, useSWRPaginated } from "./useSWRPaginated";
 import axios from "axios";
 import { SWRConfig } from "swr";
 import React from "react";
-import { unstable_serialize } from "swr/infinite";
+import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 
 const testapi = axios.create({ baseURL: "https://api-content.faable.link" });
 const fetcher = async (key) => {
@@ -58,8 +58,8 @@ test("with fallback data", async () => {
   //   expect(swr.data?.length).toEqual(1);
   //   expect(swr.items?.length).toEqual(30);
   // });
-  expect(result.current.data?.length).toEqual(1);
-  expect(result.current.items?.length).toEqual(30);
+  expect(result.current.data[0].results.length).toEqual(30);
+  expect(result.current.items.length).toEqual(30);
   // console.log(result.current.data);
   // console.log(result.current.items);
 });
